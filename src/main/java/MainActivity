@@ -1,0 +1,89 @@
+package com.example.assignment6;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText limit;
+    TextView startDateTV;
+    Button startDate;
+    Button submit;
+    Spinner spinner;
+    String date;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        startDate = findViewById(R.id.date_button);
+        startDateTV = findViewById(R.id.date_textview);
+        submit = findViewById(R.id.submit_button);
+        spinner = findViewById(R.id.order_spinner);
+
+        String[] spinnerItems = {"magnitude", "date"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, spinnerItems);
+        spinner.setAdapter(adapter);
+
+        limit = findViewById(R.id.numEQ_editText);
+
+        Calendar currentDate = Calendar.getInstance();
+        int d = currentDate.get(Calendar.DAY_OF_MONTH);
+        int m = currentDate.get(Calendar.MONTH);
+        int y = currentDate.get(Calendar.YEAR);
+        startDateTV.setText(y + "-" + m + "-" + d);
+//        setDate(startDateTV);
+
+        startDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, (view, year, mon, dayOfMonth) -> {
+                mon = mon + 1;
+                date = year + "-" + mon + "-" + dayOfMonth;
+                startDateTV.setText(date);
+            }, y, m, d);
+            datePickerDialog.show();
+        });
+
+
+
+        submit.setOnClickListener(v2 -> {
+            String lim = limit.getText().toString();
+            String orderBy = spinner.getSelectedItem().toString();
+            if (orderBy.equals("date")) {
+                orderBy = "time";
+            }
+            DetailsActivity.latitudes = new ArrayList<>();
+            DetailsActivity.longitudes = new ArrayList<>();
+            String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&&minmagnitude=7&starttime=" + date + "&limit=" + lim + "&orderby=" + orderBy;
+            QuakeAsyncTask task = new QuakeAsyncTask(this);
+            task.execute(url);
+            Intent intent = new Intent(MainActivity.this, ListActivity.class);
+            startActivity(intent);
+        });
+    }
+    public void setDate (TextView view){
+
+        Date today = Calendar.getInstance().getTime();//getting date
+        SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd");
+        String date = formatter.format(today);
+        view.setText(date);
+    }
+}
