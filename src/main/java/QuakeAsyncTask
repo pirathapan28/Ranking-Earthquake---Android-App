@@ -1,0 +1,32 @@
+package com.example.assignment6;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.widget.Toast;
+
+
+import java.util.List;
+
+public class QuakeAsyncTask extends AsyncTask<String, Void, List<String>> {
+
+    private Context context;
+
+    QuakeAsyncTask(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    protected List<String> doInBackground(String... url) {
+        return Utils.fetchEarthquakeData(url[0]);
+    }
+
+    @Override
+    protected void onPostExecute(List<String> result) {
+        CustomListAdapter customListAdapter = new CustomListAdapter((Activity) context, result);
+        ListActivity.listView.setAdapter(customListAdapter);
+        if(customListAdapter.isEmpty()){
+            Toast.makeText(context, "NO EARTHQUAKES", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
