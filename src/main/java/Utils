@@ -1,0 +1,79 @@
+package com.example.assignment6;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Utils {
+    public static List<String> fetchEarthquakeData(String requestURL) {
+        List<String> quakeList = new ArrayList<>();
+        try {
+            URL url = new URL(requestURL);
+            String jsonResponse;
+            InputStream inputStream;
+            HttpURLConnection urlConnection;
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            if(urlConnection.getResponseCode() == 200) {
+                inputStream = urlConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+
+                JSONObject baseJsonResponse = new JSONObject(jsonResponse);
+                JSONArray earthquakeArray = baseJsonResponse.getJSONArray("features");
+                for(int i = 0; i < earthquakeArray.length(); i++) {
+                    JSONObject currentEarthquake = earthquakeArray.getJSONObject(i);
+                    JSONObject properties = currentEarthquake.getJSONObject("properties");
+                    JSONObject geometry = currentEarthquake.getJSONObject("geometry");
+                    JSONArray coordinates = geometry.getJSONArray("coordinates");
+                    String LATITUDE = coordinates.getString(1);
+                    String LONGITUDE = coordinates.getString(0);
+                    String TITLE = properties.getString("title");
+                    String MAGNITUDE = properties.getString("mag");
+                    String TIME = properties.getString("time");
+                    String URL = properties.getString("url");
+                    DetailsActivity.latitudes.add(LATITUDE);
+                    DetailsActivity.longitudes.add(LONGITUDE);
+                    quakeList.add(TITLE + "@@" + MAGNITUDE + "@@" + TIME + "@@" + URL);
+                }
+            }
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return quakeList;
+    }
+
+    private static String readFromStream(InputStream inputStream) throws IOException {
+        StringBuilder output = new StringBuilder();
+        if(inputStream != null) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line = bufferedReader.readLine();
+            while(line != null) {
+                output.append(line);
+                line = bufferedReader.readLine();
+            }
+        }
+        return output.toString();
+    }
+}
