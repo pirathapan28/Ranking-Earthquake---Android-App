@@ -1,0 +1,74 @@
+package com.example.assignment6;
+
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+
+class CustomListAdapter extends ArrayAdapter<String> {
+
+    private Activity context;
+    private List<String> earthquakes;
+
+    CustomListAdapter(Activity context, List<String> earthquakes) {
+        super(context, R.layout.list_item, earthquakes);
+        this.context = context;
+        this.earthquakes = earthquakes;
+
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = context.getLayoutInflater();
+        View rowView = inflater.inflate(R.layout.list_item, null, true);
+        String[] earthquakeInfo = earthquakes.get(position).split("@@");
+
+        TextView title = rowView.findViewById(R.id.title);
+        title.setText(earthquakeInfo[0]);
+
+        TextView magnitude = rowView.findViewById(R.id.magnitude);
+        magnitude.setText(earthquakeInfo[1]);
+
+        Date dateToFormat = new Date(Long.parseLong(earthquakeInfo[2]));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedDate = simpleDateFormat.format(Date.parse(dateToFormat.toString()));
+        TextView date = rowView.findViewById(R.id.date);
+        date.setText(formattedDate + " (UTC)");
+
+        TextView url = rowView.findViewById(R.id.url);
+        url.setText(earthquakeInfo[3]);
+
+        if(Double.valueOf(earthquakeInfo[1]) < 7.5) {
+            title.setBackgroundColor(this.context.getResources().getColor(R.color.lowMG));
+            magnitude.setBackgroundColor(this.context.getResources().getColor(R.color.lowMG));
+            date.setBackgroundColor(this.context.getResources().getColor(R.color.lowMG));
+            url.setBackgroundColor(this.context.getResources().getColor(R.color.lowMG));
+        }
+        else {
+            title.setBackgroundColor(this.context.getResources().getColor(R.color.highMG));
+            magnitude.setBackgroundColor(this.context.getResources().getColor(R.color.highMG));
+            date.setBackgroundColor(this.context.getResources().getColor(R.color.highMG));
+            url.setBackgroundColor(this.context.getResources().getColor(R.color.highMG));
+        }
+
+        return rowView;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return earthquakes.isEmpty();
+    }
+}
