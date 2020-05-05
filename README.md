@@ -18,4 +18,4 @@ Each listview is a clickable. When clicked, it will show the geography of the ea
 This is an image of Ecuador, the marker is placed on Ecuador. If you were to click on the listview that says Ecuador on it, it will displays this on the map. <br>
 ![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/map.PNG)
 <br>
-THE END
+
