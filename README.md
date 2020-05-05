@@ -7,3 +7,9 @@ When we first open the app, we have a drop down menu when clicking the "order by
 ![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/homescreen.PNG)
 We also have a clickable calender view, when you click on the "Start date" button, a calender API is loaded. This date is for when we want to start fetching earthquake data. For example, if we click on today's date, it will show if there has been any earthquake recorded today.
 ![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/calendar.PNG)
+<br> <br>
+Once we have figure out what order we want to list the earthquake data, we can simply click submit, which will start a new intent. The earthquake data is displayed in a listview. Each listview is also clickable.
+This is an image of the listview when clicked submit when ordered by chronological order.
+![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/orderbydate.PNG)
+This is an image of the listview when clicked submit when ordered by magnitude size. 
+![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/orderby.PNG)
