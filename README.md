@@ -13,3 +13,8 @@ This is an image of the listview when clicked submit when ordered by chronologic
 ![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/orderbydate.PNG)
 This is an image of the listview when clicked submit when ordered by magnitude size. 
 ![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/orderby.PNG)
+
+<br>
+Each listview is a clickable. When clicked, it will show the geography of the earthquake on the map. We use the longitude and latitude that is fetched by the earthquake API and geographically map it for us to see.<br>
+This is an image of Ecuador, the marker is placed on Ecuador. If you were to click on the listview that says Ecuador on it, it will displays this on the map. 
+![alt text](https://github.com/pirathapan28/Ranking-Earthquake---Android-App/blob/master/image/map.PNG)
